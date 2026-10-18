@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>ATR READING</title>
+  <meta name="description" content="Lector de libros PDF minimalista.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ATR READING">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#1c1c1e" id="themeColor">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <!-- ============================ Biblioteca ============================ -->
+  <main id="library" class="library">
+    <div class="edge-top" aria-hidden="true"></div>
+    <header class="nav" id="libNav">
+      <div class="nav-row">
+        <button class="nav-btn glass pill" id="editBtn" type="button">Editar</button>
+        <div class="nav-title" id="libSmallTitle">Biblioteca</div>
+        <button class="nav-btn glass round icon" id="addBtn" type="button" aria-label="Añadir libro">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="lib-scroll" id="libScroll">
+      <h1 class="large-title">Biblioteca</h1>
+
+      <section id="continueSec" class="continue" hidden>
+        <h2 class="sec-title">Continuar leyendo</h2>
+        <button class="continue-card" id="continueCard" type="button"></button>
+      </section>
+
+      <section id="allSec">
+        <h2 class="sec-title" id="allTitle" hidden>Todos los libros</h2>
+        <div class="grid" id="grid"></div>
+      </section>
+
+      <div class="empty" id="empty" hidden>
+        <svg viewBox="0 0 48 48" class="empty-icon"><path d="M8 10c5-2 11-2 16 2 5-4 11-4 16-2v28c-5-2-11-2-16 2-5-4-11-4-16-2z"/><path d="M24 12v28"/></svg>
+        <h2>Tu biblioteca está vacía</h2>
+        <p>Añade un libro en PDF o EPUB desde Archivos, iCloud Drive o cualquier carpeta del teléfono.</p>
+        <button class="btn-filled" id="emptyAdd" type="button">Añadir libro</button>
+      </div>
+
+      <p class="lib-footer" id="libFooter"></p>
+
+      <div class="backup-box">
+        <div class="group">
+          <button class="row" id="backupBtn" type="button">
+            <span>Crear respaldo</span>
+            <svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>
+          </button>
+          <button class="row" id="restoreBtn" type="button">
+            <span>Restaurar respaldo</span>
+            <svg viewBox="0 0 24 24"><path d="M12 4v11M8 11l4 4 4-4M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>
+          </button>
+        </div>
+        <p class="backup-note" id="backupNote"></p>
+      </div>
+    </div>
+
+    <input type="file" id="fileInput" accept="application/pdf,.pdf,application/epub+zip,.epub" multiple hidden>
+    <input type="file" id="restoreInput" hidden>
+  </main>
+
+  <!-- ============================== Lector ============================== -->
+  <section id="reader" class="reader" hidden>
+    <div class="r-scroll" id="rScroll">
+      <article class="r-text" id="rText" lang="es"></article>
+      <div class="r-pages" id="rPages"></div>
+    </div>
+
+    <div class="r-mini" id="rMini"></div>
+
+    <header class="r-top" id="rTop">
+      <button class="r-btn glass round back" id="rBack" type="button" aria-label="Biblioteca">
+        <svg viewBox="0 0 24 24"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+      </button>
+      <div class="r-title-wrap"><div class="r-title glass" id="rTitle"></div></div>
+      <div class="r-group glass">
+        <button class="r-btn" id="rMark" type="button" aria-label="Marcador">
+          <svg viewBox="0 0 24 24"><path d="M7 4.5h10v15l-5-3.8-5 3.8z"/></svg>
+        </button>
+        <button class="r-btn" id="rToc" type="button" aria-label="Índice">
+          <svg viewBox="0 0 24 24"><path d="M9.5 6.5h10M9.5 12h10M9.5 17.5h10"/><circle cx="5" cy="6.5" r="1.15"/><circle cx="5" cy="12" r="1.15"/><circle cx="5" cy="17.5" r="1.15"/></svg>
+        </button>
+        <button class="r-btn aa" id="rAa" type="button" aria-label="Apariencia">
+          <!-- Dibujado (no texto) para que quede centrado igual que los demás iconos -->
+          <svg viewBox="0 0 24 24" class="aa-icon"><path d="M2.2 18.5l3.4-8.6 3.4 8.6M3.4 15.6h4.4"/><path d="M10.2 18.5l5.4-13.5 5.4 13.5M12.2 13.7h6.8"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <footer class="r-bottom glass" id="rBottom">
+      <input type="range" id="rSlider" min="1" max="1" value="1" aria-label="Página">
+      <div class="r-pos"><span id="rPos"></span><span id="rLeft"></span></div>
+    </footer>
+
+    <div class="r-loading" id="rLoading" hidden>
+      <div class="spinner"></div>
+      <p id="rLoadingText">Preparando el libro…</p>
+      <div class="bar"><div id="rLoadingBar"></div></div>
+    </div>
+
+    <div class="toast glass" id="toast" hidden></div>
+  </section>
+
+  <!-- Hojas modales (se rellenan desde app.js) -->
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="sheet glass-sheet" id="sheet" hidden role="dialog" aria-modal="true">
+    <div class="grabber"></div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+  <div class="alert-wrap" id="alertWrap" hidden>
+    <div class="alert" id="alert" role="alertdialog"></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
